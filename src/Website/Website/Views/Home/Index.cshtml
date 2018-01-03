@@ -1,15 +1,57 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Table";
 }
 <div class="row">
     <div class="col-md-12">
-        
+        <table class="table table-bordered table-hover table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>Title1</th>
+                <th>Title2</th>
+                <th>Title3</th>
+                <th>Title4</th>
+                <th>Title5</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- ko ifnot:checkExistedData -->
+            <tr>
+                <td colspan="5" class="text-center" data-bind="text:emptyText"></td>
+            </tr>
+            <!-- /ko -->
+            <!-- ko if:checkExistedData -->
+            <!-- ko foreach:rows -->
+            <tr>
+                <td data-bind="text:($root.pageIndex()-1)*$root.pageSize()+$index()+1"></td>
+                <td data-bind="text:field1"></td>
+                <td data-bind="text:field2"></td>
+                <td data-bind="text:field3"></td>
+                <td data-bind="text:field4"></td>
+                <td data-bind="text:field5"></td>
+            </tr>
+            <!-- /ko -->
+            <!-- /ko -->
+            </tbody>
+        </table>
+        @Html.Partial("_PartialPagination")
     </div>
 </div>
 @section Scripts
 {
     <script type="text/javascript" src="~/js/knockout-3.4.2.js"></script>
     <script type="text/javascript" src="~/js/knockout.mapping.min.js"></script>
-    <script type="text/javascript" src="~/js/jquery.tmpl.js"></script>
     <script type="text/javascript" src="~/js/knockout.pagination.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            viewmodel.remoteUrl('@Url.Action("AjaxLoadData")');
+            viewmodel.pageSize(10);
+            viewmodel.pageIndex(1);
+            loadList(viewmodel.remoteUrl(),
+                {
+                    pageSize: viewmodel.pageSize(),
+                    pageIndex: viewmodel.pageIndex()                    
+                });
+        });
+    </script>
 }

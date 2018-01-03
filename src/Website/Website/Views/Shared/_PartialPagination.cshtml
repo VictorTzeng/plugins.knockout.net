@@ -3,9 +3,9 @@
 *@
 <style type="text/css">
     .page_add{float:right; margin:25px 8px auto 8px;}
-    .page_add input{ float:left; width:50px;  margin:0 8px;margin-top:-5px;}
+    .page_add input{ float:left; width:80px;  margin:0 8px;margin-top:-8px;}
     .page_add span{float:left;}
-    .page_add button{ float:right; margin:0 8px;margin-top:-5px;}
+    .page_add button{ float:right; margin:0 8px;margin-top:-8px;}
     .pagination > li > a, .pagination > li > span{ color:#666;}
 </style>
 <!--分页开始-->
@@ -14,43 +14,21 @@
     <div class="col-md-6">
         <nav aria-label="Page navigation">
             <ul class="pagination">
-                <!-- ko if:isFirst-->
-                <li class="disabled">
-                    <span>
-                        <span aria-hidden="true">&laquo;</span>
-                    </span>                    
-                </li>
-                <!-- /ko -->
-
-                <!-- ko ifnot:isFirst-->
                 <li>
                     <a data-bind="click:previous" aria-label="Previous" title="上页">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <!-- /ko -->
-
                 <!-- ko foreach:pageNumbers -->
                 <li data-bind="css:{active:$data==$root.pageIndex()}">
                     <a data-bind="text:$data,click:function(){$root.gotopage($data);}"></a>
                 </li>
                 <!-- /ko -->
-
-                <!-- ko if:isLast-->                
-                <li class="disabled">
-                    <span>
-                        <span aria-hidden="true">&laquo;</span>
-                    </span>                    
-                </li>
-                <!-- /ko -->
-
-                <!-- ko ifnot:isLast-->
                 <li>
                     <a data-bind="click:next" aria-label="Next" title="下页">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
-                <!-- /ko -->
             </ul>
         </nav>
     </div>

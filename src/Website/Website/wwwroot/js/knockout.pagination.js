@@ -7,7 +7,7 @@
     pageNumbers: ko.observableArray(),
     targetPageIndex: ko.observable(1),
     remoteUrl: ko.observable(''),
-    coursewareId: ko.observable(''),
+    emptyText: ko.observable('暂无数据'),
     next: function () {
         if (this.pageIndex() < this.pageCount()) {
             this.pageIndex(this.pageIndex() + 1);
@@ -15,7 +15,6 @@
                 {
                     pageSize: this.pageSize(),
                     pageIndex: this.pageIndex(),
-                    coursewareId: this.coursewareId()
                 });
         } else {
             layer.msg("已经是最后一页了");
@@ -28,7 +27,6 @@
                 {
                     pageSize: this.pageSize(),
                     pageIndex: this.pageIndex(),
-                    coursewareId: this.coursewareId()
                 });
         } else {
             layer.msg("已经是第一页了");
@@ -43,7 +41,6 @@
                 {
                     pageSize: this.pageSize(),
                     pageIndex: this.pageIndex(),
-                    coursewareId: this.coursewareId()
                 });            
         }
     },
@@ -63,13 +60,18 @@
 ko.applyBindings(viewmodel);
 
 function loadList(url, data) {
-    $.get(url,
-        data,
-        function (data) {
+    $.ajax({
+        url:url,
+        data:data,
+        success:function (data) {
             viewmodel.pageNumbers.removeAll();
             ko.mapping.fromJS(data, {}, viewmodel);
             for (var i = 0; i < data.pageCount; i++) {
                 viewmodel.pageNumbers.push(i + 1);
             }
-        });
+        },
+        error: function(data) {
+            layer.alert("请求数据出现错误", { icon: 2 });
+        }
+    });
 }

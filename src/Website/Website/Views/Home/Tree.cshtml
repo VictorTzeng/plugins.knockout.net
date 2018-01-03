@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewData["Title"] = "Tree";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    li {
+        padding-left: 10px !important;
+    }
+     a > i {
+         margin-left: -15px;
+     }
+    a > b {
+        margin-left: 10px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-4">
+        <ul id="chapter-tree" data-bind="template:{name:'nodeTemplate',foreach:rows}" class="nav nav-pills nav-stacked"></ul>
+    </div>
+</div>
+@section Scripts
+    {
+    <script type="text/javascript" src="~/js/knockout-3.4.2.js"></script>
+    <script type="text/javascript" src="~/js/knockout.mapping.min.js"></script>
+    <script type="text/javascript" src="~/Js/jquery.tmpl.js"></script>
+    <script id='nodeTemplate' type='text/html'>
+        <li data-bind="click:$root.onNodeClick, clickBubble: false">
+            <!-- ko ifnot:children -->
+            <a data-bind="attr:{'data-id':nodeId}" href="javascript:;"><b data-bind="text:text"></b></a>
+            <!-- /ko -->
+            <!-- ko if:children -->
+            <a data-bind="attr:{'data-id':nodeId}" href="javascript:;">
+                <i class="glyphicon glyphicon-plus" data-bind="attr:{'data-target':'#node_'+nodeId, 'aria-controls':nodeId}, clickBubble: false" data-toggle="collapse" aria-expanded="false"></i><b data-bind="text:text"></b>
+            </a>
+            <div class="collapse" data-bind="attr:{'id':'node_'+nodeId}">
+                <ul data-bind="template:{name:'nodeTemplate',foreach:children}" class="nav nav-pills nav-stacked" style="margin-left:30px;"></ul>
+            </div>
+            <!-- /ko -->
+        </li>
+    </script>
+    <script type="text/javascript">
+        var viewmodel = {
+            rows: ko.observableArray([]),
+            loadTreeList: function() {
+                $.get('@Url.Action("AjaxLoadTree")', { }, function (data) {
+                    if (data.success == true) {
+                        viewmodel.rows(data.rows);
+                    } else {
+                        layer.alert(data.msg, { icon: 2 });
+                    }
+                });
+            },
+            onNodeClick: function(data, event) {
+                $("#chapter-tree").find("li.active").removeClass("active");
+                $(event.currentTarget).addClass("active");
+            }
+        };
+        ko.applyBindings(viewmodel);
+
+        function onNodeClick(obj) {
+            $("#chapter-tree").find("li.active").removeClass("active");
+            $(obj).addClass("active");
+        }
+
+        $(function() {
+            viewmodel.loadTreeList();
+            $("div.collapse").on('show.bs.collapse',
+                function() {
+                    $(this).prev().find("i").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+                }).on('hidde.bs.collapse',
+                function() {
+                    $(this).prev().find("i").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+                });
+        });
+    </script>
+}
+
